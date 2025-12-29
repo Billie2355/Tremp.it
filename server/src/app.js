@@ -34,6 +34,8 @@ app.use('/api/users', userRoutes);
 const roleRoutes = require('./routes/roles.routes');
 app.use('/api/roles', roleRoutes);
 
+const carRoutes = require('./routes/cars.routes')
+app.use('/api/cars', carRoutes);
 
 
 
