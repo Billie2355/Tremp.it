@@ -1,5 +1,6 @@
 const pool = require('../db');
 
+// FIRST CRUD START
 const createUser = async ({ email, password, first_name, last_name, phone }) => {
   const result = await pool.query(
     `
@@ -20,6 +21,7 @@ const getAllUsers = async () => {
 };
 
 const getUserById = async (id) => {
+  console.log("userId in Queries: " + id)
   const result = await pool.query(
     `SELECT id, email, first_name, last_name, phone FROM users WHERE id = $1`,
     [id]
@@ -46,11 +48,35 @@ const deactivateUser = async (id) => {
     [id]
   );
 };
+// FIRST CRUD END
+
+const getUserRole = async (id) => {
+  const result = await pool.query(
+    `SELECT r.name
+    FROM user_roles ur
+    JOIN roles r ON r.id = ur.role_id
+    WHERE ur.user_id = $1`,
+    [id]
+  );
+  return result.rows[0];
+};
+
+const getActiveCarsCount = async (id) => {
+  const result = await pool.query(
+    `SELECT COUNT(*)::int AS count
+    FROM cars
+    WHERE user_id = $1 AND status = 'active'`,
+    [id]
+  );
+  return result.rows[0];
+};
 
 module.exports = {
   createUser,
   getAllUsers,
   getUserById,
   updateUser,
-  deactivateUser
+  deactivateUser,
+  getUserRole,
+  getActiveCarsCount
 };

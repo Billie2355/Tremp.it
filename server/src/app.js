@@ -25,7 +25,12 @@ app.get('/db-test', async (req, res) => {
   }
 });
 
+const authRoutes = require('./routes/auth.routes');
+app.use('/api/auth', authRoutes);
+
 const userRoutes = require('./routes/user.routes')
 app.use('/api/users', userRoutes);
+
+
 
 module.exports = app;
