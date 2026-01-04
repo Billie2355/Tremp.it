@@ -1,6 +1,10 @@
 const carQueries = require('../db/queries/car.queries');
 const userQueries = require('../db/queries/user.queries');
 
+const getCarById = async (carId) => {
+  return await carQueries.getCarById(id);
+}
+
 const createCar = async (userId, data) => {
   const { car_model, car_color, license_plate, seats } = data;
 
@@ -33,4 +37,4 @@ const createCar = async (userId, data) => {
   };
 };
 
-module.exports = { createCar };
+module.exports = { createCar, getCarById };

@@ -37,6 +37,9 @@ app.use('/api/roles', roleRoutes);
 const carRoutes = require('./routes/cars.routes')
 app.use('/api/cars', carRoutes);
 
+const rideRoutes = require('./routes/rides.routes')
+app.use('/api/rides', rideRoutes);
+
 
 
 module.exports = app;
