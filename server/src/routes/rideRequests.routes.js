@@ -6,5 +6,7 @@ const controller = require('../controllers/rideRequest.controller');
 router.post('/', auth, controller.createRequest);
 router.patch('/:id/approve', auth, controller.approveRequest);
 router.patch('/:id/reject', auth, controller.rejectRequest);
+router.get('/my', auth, controller.getMyRequests);
+
 
 module.exports = router;

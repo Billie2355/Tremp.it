@@ -59,7 +59,7 @@ const createRide = async (userId, data) => {
     throw new Error('Date must be today or in the future')
   }
 
-  
+
   // יצירת נסיעה (MVP – לא recurring)
   const ride = await rideQueries.createRide({
     driver_id: userId,
@@ -86,6 +86,16 @@ const createRide = async (userId, data) => {
   };
 };
 
+const getMyRides = async (driverId) => {
+  const role = await userQueries.getUserRole(driverId);
+
+  if (role.name !== 'driver') {
+    throw new Error('Only drivers can view their rides');
+  }
+
+  return await rideQueries.getByDriverId(driverId);
+};
+
 const searchRides = async (filters) => {
   const {
     origin,
@@ -106,5 +116,5 @@ const searchRides = async (filters) => {
   });
 };
 
-module.exports = { createRide, searchRides };
+module.exports = { createRide, searchRides, getMyRides };
  

@@ -42,6 +42,35 @@ const createRide = async ({
   return result.rows[0];
 };
 
+const getByDriverId = async (driverId) => {
+  const res = await pool.query(
+    `
+    SELECT
+      r.id AS ride_id,
+      ri.id AS instance_id,
+      ri.ride_date,
+      ri.departure_time,
+      ri.seats_available,
+      r.origin,
+      r.destination,
+      r.price,
+
+      COUNT(rr.id) FILTER (WHERE rr.status = 'pending') AS pending_requests
+
+    FROM rides r
+    JOIN ride_instances ri ON ri.ride_id = r.id
+    LEFT JOIN ride_requests rr ON rr.instance_id = ri.id
+
+    WHERE r.driver_id = $1
+    GROUP BY r.id, ri.id
+    ORDER BY ri.ride_date, ri.departure_time
+    `,
+    [driverId]
+  );
+
+  return res.rows;
+};
+
 const searchRides = async ({
   origin,
   destination,
@@ -109,5 +138,6 @@ module.exports = {
   createRide,
   searchRides,
   getRideById,
-  decreaseSeats
+  decreaseSeats,
+  getByDriverId
 };

@@ -10,6 +10,18 @@ const createRide = async (req, res) => {
   }
 };
 
+const getMyRides = async (req, res) => {
+  try {
+    const driverId = req.user.id;
+
+    const rides = await rideService.getMyRides(driverId);
+
+    res.json(rides);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
 const searchRides = async (req, res) => {
   try {
     const rides = await rideService.searchRides(req.query);
@@ -19,4 +31,4 @@ const searchRides = async (req, res) => {
   }
 };
 
-module.exports = { createRide, searchRides };
+module.exports = { createRide, getMyRides, searchRides };

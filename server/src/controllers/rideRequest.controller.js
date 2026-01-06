@@ -27,8 +27,22 @@ const rejectRequest = async (req, res) => {
   }
 };
 
+const getMyRequests = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const requests = await service.getMyRequests(userId);
+
+    res.json(requests);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+
 module.exports = {
   createRequest,
   approveRequest,
-  rejectRequest
+  rejectRequest,
+  getMyRequests
 };

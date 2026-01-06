@@ -91,8 +91,19 @@ const rejectRequest = async (driverId, requestId) => {
   return { message: 'Request rejected' };
 };
 
+const getMyRequests = async (userId) => {
+  const role = await userQueries.getUserRole(userId);
+
+  if (role.name !== 'passenger') {
+    throw new Error('Only passengers can view their requests');
+  }
+
+  return await requestQueries.getByPassengerId(userId);
+};
+
 module.exports = {
   createRequest,
   approveRequest,
-  rejectRequest
+  rejectRequest,
+  getMyRequests
 };

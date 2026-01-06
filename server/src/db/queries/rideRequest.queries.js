@@ -41,9 +41,43 @@ const updateStatus = async (id, status) => {
   );
 };
 
+const getByPassengerId = async (passengerId) => {
+  const res = await pool.query(
+    `
+    SELECT 
+      rr.id AS request_id,
+      rr.status,
+      rr.seats_requested,
+
+      ri.id AS instance_id,
+      ri.ride_date,
+      ri.departure_time,
+
+      r.origin,
+      r.destination,
+
+      u.id AS driver_id,
+      u.first_name || ' ' || u.last_name AS driver_name
+
+    FROM ride_requests rr
+    JOIN ride_instances ri ON rr.instance_id = ri.id
+    JOIN rides r ON ri.ride_id = r.id
+    JOIN users u ON r.driver_id = u.id
+
+    WHERE rr.passenger_id = $1
+    ORDER BY ri.ride_date, ri.departure_time
+    `,
+    [passengerId]
+  );
+
+  return res.rows;
+};
+
+
 module.exports = {
   createRequest,
   findExisting,
   getById,
-  updateStatus
+  updateStatus,
+  getByPassengerId
 };
