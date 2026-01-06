@@ -6,6 +6,7 @@ const createRide = async ({
   origin,
   destination,
   departure_time,
+  start_date,
   seats_offering,
   price
 }) => {
@@ -17,12 +18,13 @@ const createRide = async ({
       origin,
       destination,
       departure_time,
+      start_date,
       seats_offering,
       price,
       is_recurring,
       status
     )
-    VALUES ($1, $2, $3, $4, $5, $6, $7, false, 'active')
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, false, 'active')
     RETURNING *
     `,
     [
@@ -31,6 +33,7 @@ const createRide = async ({
       origin,
       destination,
       departure_time,
+      start_date,
       seats_offering,
       price ?? 0
     ]
@@ -82,7 +85,29 @@ const searchRides = async ({
   return result.rows;
 };
 
+const getRideById = async (id) => {
+  const res = await pool.query(
+    `SELECT * FROM rides WHERE id = $1`,
+    [id]
+  );
+  return res.rows[0];
+};
+
+const decreaseSeats = async (rideId, seats) => {
+  await pool.query(
+    `
+    UPDATE rides
+    SET seats_offering = seats_offering - $1
+    WHERE id = $2
+    `,
+    [seats, rideId]
+  );
+};
+
+
 module.exports = {
   createRide,
-  searchRides
+  searchRides,
+  getRideById,
+  decreaseSeats
 };

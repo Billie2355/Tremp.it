@@ -40,6 +40,7 @@ app.use('/api/cars', carRoutes);
 const rideRoutes = require('./routes/rides.routes')
 app.use('/api/rides', rideRoutes);
 
-
+const rideRequestRoutes = require('./routes/rideRequests.routes');
+app.use('/api/ride-requests', rideRequestRoutes);
 
 module.exports = app;

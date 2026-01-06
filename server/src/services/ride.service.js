@@ -1,6 +1,8 @@
 const rideQueries = require('../db/queries/ride.queries');
 const userQueries = require('../db/queries/user.queries');
 const carService = require('../db/queries/car.queries');
+const rideInstanceQueries = require('../db/queries/rideInstance.queries');
+
 
 const createRide = async (userId, data) => {
   const {
@@ -8,6 +10,7 @@ const createRide = async (userId, data) => {
     origin,
     destination,
     departure_time,
+    start_date,
     seats_offering,
     price
   } = data;
@@ -18,6 +21,7 @@ const createRide = async (userId, data) => {
     !origin ||
     !destination ||
     !departure_time ||
+    !start_date ||
     !seats_offering
   ) {
     throw new Error('Missing required fields');
@@ -48,7 +52,14 @@ const createRide = async (userId, data) => {
     throw new Error('Invalid Car')
   }
 
+  // בדיקה: התאריך מאוחר או שווה להיום
+  const inputDate = new Date(start_date).setHours(0, 0, 0, 0)
+  const today = new Date().setHours(0, 0, 0, 0)
+  if (inputDate < today) {
+    throw new Error('Date must be today or in the future')
+  }
 
+  
   // יצירת נסיעה (MVP – לא recurring)
   const ride = await rideQueries.createRide({
     driver_id: userId,
@@ -56,13 +67,22 @@ const createRide = async (userId, data) => {
     origin,
     destination,
     departure_time,
+    start_date,
     seats_offering,
     price
   });
 
+  const instance = await rideInstanceQueries.createInstance({
+    ride_id: ride.id,
+    ride_date: ride.start_date,
+    departure_time: ride.departure_time,
+    seats_available: ride.seats_offering
+  });
+
   return {
     message: 'Ride created successfully',
-    ride
+    ride,
+    instance
   };
 };
 
