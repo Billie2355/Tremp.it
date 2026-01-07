@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign up</title>
+  <link rel="stylesheet" href="../styles/base.css" />
+  <link rel="stylesheet" href="../styles/forms.css" />
+  <link rel="stylesheet" href="../styles/pages/auth.css" />
+  <link rel="stylesheet" href="../styles/layout.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Sign up</h1>
+
+    <form class="stack" id="signupForm">
+      <input placeholder="First name" id="first_name" required />
+      <br />
+      <input placeholder="Last name" id="last_name" required />
+      <br />
+      <input type="email" placeholder="Email" id="email" required />
+      <br />
+      <input type="password" placeholder="Password" id="password" required />
+      <br />
+      <button type="submit">Create account</button>
+    </form>
+
+    <p id="error"></p>
+
+    <script type="module">
+      import { signup } from '../services/auth.service.js';
+      import { auth } from '../context/auth.context.js';
+
+      document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        try {
+          const data = {
+            first_name: first_name.value,
+            last_name: last_name.value,
+            email: email.value,
+            password: password.value
+          };
+
+          const res = await signup(data);
+          auth.setToken(res.token);
+
+          window.location.href = './pages/choose-role.html';
+        } catch (err) {
+          document.getElementById('error').innerText = err.message;
+        }
+      });
+    </script>
+  </div>
+</body>
+</html>
